@@ -15,7 +15,7 @@ export const createPaymentIntent = tryCatch(async (req, res, next) => {
 
   return res.status(201).json({
     success: true,
-    clientSecrect: paymentIntent.client_secret,
+    clientSecret: paymentIntent.client_secret,
   });
 });
 
