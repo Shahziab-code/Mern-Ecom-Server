@@ -1,8 +1,10 @@
+import { config } from "dotenv";
+config();
+
 import express, { ErrorRequestHandler } from "express";
 import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
-import { config } from "dotenv";
 import morgan from "morgan";
 import Stripe from "stripe";
 import cors from "cors";
@@ -13,10 +15,10 @@ import productRoute from "./routers/products.js";
 import orderRoute from "./routers/order.js";
 import paymentRoute from "./routers/payment.js";
 import dashboradRoute from "./routers/stats.js";
+import uploadRoute from "./routers/upload.js";
 
-config({
-  path: "./.env",
-});
+
+
 const port = process.env.PORT || 4000;
 const mongoURI = process.env.MONGO_URI || "";
 const stripeKey = process.env.STRIPE_KEY || "";
@@ -39,6 +41,8 @@ app.use("/api/v1/product", productRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/dashboard", dashboradRoute);
+app.use("/api/v1/upload", uploadRoute);
+
 
 // Error Middleware - Now properly typed
 app.use("/uploads", express.static("uploads"));

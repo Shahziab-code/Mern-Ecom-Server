@@ -11,6 +11,7 @@ import { rm } from "fs";
 import { faker } from "@faker-js/faker";
 import { myCache } from "../app.js";
 import { invalidateCache } from "../utils/features.js";
+import { cloudinary } from "../config/cloudinary.js";
 
 export const getLatestProducts = tryCatch(async (req, res, next) => {
   let products;
@@ -78,12 +79,10 @@ export const newProduct = tryCatch(
     const { name, category, price, stock } = req.body;
     const photo = req.file;
 
+    // Check if photo exists (multer-storage-cloudinary sets req.file automatically)
     if (!photo) return next(new ErrorHandler("Please Add Photo", 400));
 
     if (!name || !category || !price || !stock) {
-      rm(photo.path, () => {
-        console.log("Deleted");
-      });
       return next(new ErrorHandler("Please Enter All Fields", 400));
     }
 
@@ -92,7 +91,7 @@ export const newProduct = tryCatch(
       category: category.toLowerCase(),
       price,
       stock,
-      photo: photo.path,
+      photo: photo.path,  // <-- Cloudinary URL here
     });
 
     invalidateCache({ product: true, admin: true });
@@ -103,6 +102,7 @@ export const newProduct = tryCatch(
     });
   }
 );
+
 
 export const updateProduct = tryCatch(async (req, res, next) => {
   const { id } = req.params;
