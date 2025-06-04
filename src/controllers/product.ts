@@ -91,7 +91,8 @@ export const newProduct = tryCatch(
       category: category.toLowerCase(),
       price,
       stock,
-      photo: photo.path,  // <-- Cloudinary URL here
+      photo: photo.path, // <-- Cloudinary URL here
+      photoPublicId: photo.filename, 
     });
 
     invalidateCache({ product: true, admin: true });
@@ -141,6 +142,8 @@ export const deleteProduct = tryCatch(async (req, res, next) => {
   rm(product.photo!, () => {
     console.log("Product Photo Deleted");
   });
+
+  await cloudinary.uploader.destroy(product.photoPublicId);
 
   await product.deleteOne();
 
